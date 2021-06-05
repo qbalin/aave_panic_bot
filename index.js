@@ -9,9 +9,10 @@ try {
 } catch(e) {
 	DEBUG_CHAT_ID = null;
 }
-const TELEGRAM_BOT_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_KEY}`
+const TELEGRAM_BOT_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_KEY}`;
 
 const previousResults = JSON.parse(fs.readFileSync('./previous_results.json'));
+const recordedChatIds = JSON.parse(fs.readFileSync('./chat_ids.json'));
 
 const LOAN_NOT_PAYING_FOR_ITSELF_STICKERS = [
   'CAACAgIAAxkBAAMMYLuPobOLloOT1niEV3azKkeNBs0AAswAAzDUnRG4NAgyDgkxzB8E', // 😨 Edvard Munch, The Scream
@@ -64,6 +65,8 @@ const getTelegramUpdates = async () => {
 }
 
 const getTelegramChatIds = async () => {
+	// Get the ids of subscribers from the updates, but since updates can be emptied,
+	// also record the list of chats on disk and merge the two. Save it again on disk.
 	const updates = await getTelegramUpdates();
 	const chatIds = updates.result.map(r => {
 		if (r.my_chat_member) { 
@@ -73,8 +76,10 @@ const getTelegramChatIds = async () => {
 		} else {
 			return null;
 		}
-	}).filter(a => a);
-	return [... new Set(chatIds)];
+	}).filter(a => a).concat(recordedChatIds);
+	const res = [... new Set(chatIds)];
+	fs.writeFileSync('./chat_ids.json', JSON.stringify(res));
+	return res;
 }
 
 const sendTelegramMessage = async (message, sticker) => {
