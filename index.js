@@ -3,7 +3,10 @@ const fs = require('fs');
 
 const MARKET_DATA_URL = 'https://aave-api-v2.aave.com/data/markets-data';
 const TELEGRAM_BOT_KEY = fs.readFileSync('./botkey.txt');
+const DEBUG_CHAT_ID = fs.readFileSync('./debug_chat_id.txt').toString() || null;
 const TELEGRAM_BOT_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_KEY}`
+
+const previousResults = JSON.parse(fs.readFileSync('./previous_results.json'));
 
 const LOAN_NOT_PAYING_FOR_ITSELF_STICKERS = [
   'CAACAgIAAxkBAAMMYLuPobOLloOT1niEV3azKkeNBs0AAswAAzDUnRG4NAgyDgkxzB8E', // 😨 Edvard Munch, The Scream
@@ -70,7 +73,7 @@ const getTelegramChatIds = async () => {
 }
 
 const sendTelegramMessage = async (message, sticker) => {
-	const chatIds = await getTelegramChatIds();
+	const chatIds = DEBUG_CHAT_ID ? [DEBUG_CHAT_ID] : await getTelegramChatIds();
 	chatIds.forEach(async id => {
 		await httpCall(`${TELEGRAM_BOT_URL}/sendSticker?chat_id=${id}&sticker=${sticker}`);
 		await httpCall(`${TELEGRAM_BOT_URL}/sendMessage?chat_id=${id}&text=${encodeURI(message)}&parse_mode=Markdown`);
@@ -86,13 +89,13 @@ const sendTelegramMessage = async (message, sticker) => {
 	const depositIncentive = maticData.aIncentivesAPY;
 	const depositRate = maticData.liquidityRate;	
 
-	let message, sticker;
+	let message, sticker;	
 
 	if (borrowIncentive + depositIncentive + depositRate < borrowRate) {
 		sticker = LOSING_MONEY_STICKERS[randomIndexUpTo2()];
 		message = 'You\'re loosing money!';		
 	} else if (borrowIncentive < borrowRate) {
-		sticker = LOAN_NOT_PAYING_FOR_ITSELF_STICKERS[randomIndexUpTo2()];		
+		sticker = LOAN_NOT_PAYING_FOR_ITSELF_STICKERS[randomIndexUpTo2()];
 		message = 'The loan is not paying for itself anymore. Still making money if you\'re lending though.';
 	} else {
 		sticker = ALL_IS_WELL_STICKERS[randomIndexUpTo2()];
@@ -100,5 +103,9 @@ const sendTelegramMessage = async (message, sticker) => {
 	}
 	const rates = `\n- Borrow rate: ${twoDecimals(borrowRate * 100)}%\n- Borrow incentive: ${twoDecimals(borrowIncentive * 100)}%\n- Deposit rate: ${twoDecimals(depositRate * 100)}%\n- Deposit incentive: ${twoDecimals(depositIncentive * 100)}%\nCheck it out on [AAVE](https://aave.com/)`;
 
-	sendTelegramMessage(message + rates, sticker);	
+	const previousWarningLevel = previousResults.warningLevel || '';
+	if (previousWarningLevel != message) {
+		sendTelegramMessage(message + rates, sticker);
+		fs.writeFileSync('./previous_results.json', JSON.stringify({ warningLevel: message }));
+	}
 })();
