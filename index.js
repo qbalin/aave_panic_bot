@@ -3,7 +3,12 @@ const fs = require('fs');
 
 const MARKET_DATA_URL = 'https://aave-api-v2.aave.com/data/markets-data';
 const TELEGRAM_BOT_KEY = fs.readFileSync('./botkey.txt');
-const DEBUG_CHAT_ID = fs.readFileSync('./debug_chat_id.txt').toString() || null;
+let DEBUG_CHAT_ID;
+try {
+	DEBUG_CHAT_ID = fs.readFileSync('./debug_chat_id.txt').toString();
+} catch(e) {
+	DEBUG_CHAT_ID = null;
+}
 const TELEGRAM_BOT_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_KEY}`
 
 const previousResults = JSON.parse(fs.readFileSync('./previous_results.json'));
@@ -83,7 +88,6 @@ const sendTelegramMessage = async (message, sticker) => {
 (async () => {
 	const marketData = (await getMarketData()).reserves;		
 	const maticData = marketData.find(d => d.symbol === 'MWMATIC');
-	console.log('maticData', maticData)	
 	const borrowIncentive = maticData.vIncentivesAPY;
 	const borrowRate = maticData.variableBorrowRate;
 	const depositIncentive = maticData.aIncentivesAPY;
