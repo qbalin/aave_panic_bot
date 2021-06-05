@@ -12,4 +12,4 @@ This bot sends warnings based on the profitability of an AAVE-Polygon WMATIC loa
 Overall, this bot should be rather quiet, it currently runs every 15 minutes.
 
 # How to subscribe:
-Find the bot `@AavePanicBot` on Telegram or with this link: [t.me/AavePanicBot](t.me/AavePanicBot)
+Find the bot `@AavePanicBot` on Telegram or with this link: [t.me/AavePanicBot](https://t.me/AavePanicBot)
