@@ -93,12 +93,12 @@ const sendTelegramMessage = async (message, sticker) => {
 (async () => {
 	const marketData = (await getMarketData()).reserves;		
 	const maticData = marketData.find(d => d.symbol === 'MWMATIC');
-	const borrowIncentive = maticData.vIncentivesAPY;
-	const borrowRate = maticData.variableBorrowRate;
-	const depositIncentive = maticData.aIncentivesAPY;
-	const depositRate = maticData.liquidityRate;	
+	const borrowIncentive = parseFloat(maticData.vIncentivesAPY);
+	const borrowRate = parseFloat(maticData.variableBorrowRate);
+	const depositIncentive = parseFloat(maticData.aIncentivesAPY);
+	const depositRate = parseFloat(maticData.liquidityRate);
 
-	let message, sticker;	
+	let message, sticker;
 
 	if (borrowIncentive + depositIncentive + depositRate < borrowRate) {
 		sticker = LOSING_MONEY_STICKERS[randomIndexUpTo2()];
