@@ -110,7 +110,7 @@ const sendTelegramMessage = async (message, sticker) => {
 		sticker = ALL_IS_WELL_STICKERS[randomIndexUpTo2()];
 		message = 'Making sweet, sweet money again!';
 	}
-	const rates = `\n- Borrow rate: ${twoDecimals(borrowRate * 100)}%\n- Borrow incentive: ${twoDecimals(borrowIncentive * 100)}%\n- Deposit rate: ${twoDecimals(depositRate * 100)}%\n- Deposit incentive: ${twoDecimals(depositIncentive * 100)}%\nCheck it out on [AAVE](https://app.aave.com/)`;
+	const rates = `\n- Borrow and lending overall rate: ${twoDecimals((borrowIncentive + depositIncentive + depositRate - borrowRate) * 100)}%\n- Borrow-only rate: ${twoDecimals((borrowIncentive - borrowRate) * 100)}%\n\nBreak down:\n- Borrow rate: ${twoDecimals(borrowRate * 100)}%\n- Borrow incentive: ${twoDecimals(borrowIncentive * 100)}%\n- Deposit rate: ${twoDecimals(depositRate * 100)}%\n- Deposit incentive: ${twoDecimals(depositIncentive * 100)}%\n\nCheck it out on [AAVE](https://app.aave.com/)`;
 
 	const previousWarningLevel = previousResults.warningLevel || '';
 	if (previousWarningLevel != message) {
