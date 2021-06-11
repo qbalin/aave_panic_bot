@@ -91,7 +91,8 @@ const sendTelegramMessage = async (message, sticker) => {
 }
 
 (async () => {
-	const marketData = (await getMarketData()).reserves;		
+	const marketData = (await getMarketData()).reserves;
+	fs.writeFileSync(`./history/${new Date().valueOf()}.json`, JSON.stringify(marketData));
 	const maticData = marketData.find(d => d.symbol === 'MWMATIC');
 	const borrowIncentive = parseFloat(maticData.vIncentivesAPY);
 	const borrowRate = parseFloat(maticData.variableBorrowRate);
