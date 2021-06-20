@@ -13,3 +13,5 @@ Overall, this bot should be rather quiet, it currently runs every 15 minutes.
 
 # How to subscribe:
 Find the bot `@AavePanicBot` on Telegram or with this link: [t.me/AavePanicBot](https://t.me/AavePanicBot)
+
+[Edit] The bot has been de-activated as MATIC borrowing+lending is not profitable anymore.
