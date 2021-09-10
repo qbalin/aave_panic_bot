@@ -15,3 +15,35 @@ Overall, this bot should be rather quiet, it currently runs every 15 minutes.
 Find the bot `@AavePanicBot` on Telegram or with this link: [t.me/AavePanicBot](https://t.me/AavePanicBot)
 
 [Edit] The bot has been de-activated as MATIC borrowing+lending is not profitable anymore.
+
+# How to deploy?
+Create a TelegramBot with the BotFather. Write down your bot API key somewhere safe.
+
+Pull the code locally:
+
+```bash
+git clone https://github.com/qbalin/aave_panic_bot.git
+```
+
+Setup the dev environment (you may need to install node and npm locally).
+
+```bash
+cd aave_panic_bot
+npm install
+```
+
+Then add your secret bot key:
+```bash
+touch botkey.txt
+```
+
+Add your bot API key in botkey.txt.
+
+Run the bot manually: 
+```
+node index.js
+```
+
+You'll probably want the bot to run every x minutes. For that use a cronjob.
+
+
